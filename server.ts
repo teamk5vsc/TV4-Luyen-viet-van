@@ -1956,11 +1956,32 @@ async function getClassInfo(teacherId: string): Promise<any | null> {
     if (fs.existsSync(filePath)) {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
       const db = JSON.parse(fileContent);
-      return db[teacherId] || null;
+      if (db[teacherId]) {
+        return db[teacherId];
+      }
     }
   } catch (err) {
     console.error('Failed to read local classes file:', err);
   }
+
+  // Demo class fallback for default code t_abc123
+  if (teacherId === 't_abc123') {
+    return {
+      className: "Lớp 4A",
+      schoolName: "Trường Tiểu Học VietMaster",
+      students: [
+        { id: "s_1", name: "Nguyễn Văn Nam", avatar: "👦", pin: "1234" },
+        { id: "s_2", name: "Trần Thị Hương", avatar: "👧", pin: "1234" },
+        { id: "s_3", name: "Lê Hoàng Long", avatar: "🧑", pin: "1234" },
+        { id: "s_4", name: "Phạm Mai Chi", avatar: "👧", pin: "1234" }
+      ],
+      groups: [],
+      assignments: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+  }
+
   return null;
 }
 
