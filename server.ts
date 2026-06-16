@@ -1789,9 +1789,16 @@ interface TelemetryRecord {
   lastActive: string;
 }
 
-const KV_REST_API_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+const KV_REST_API_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || process.env.STORAGE_REST_API_URL;
+const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || process.env.STORAGE_REST_API_TOKEN;
 
+
+function getDataDir(): string {
+  if (process.env.VERCEL === '1' || process.env.NOW_REGION) {
+    return '/tmp';
+  }
+  return path.join(process.cwd(), 'data');
+}
 
 async function getTelemetryStats(): Promise<Record<string, TelemetryRecord>> {
   if (KV_REST_API_URL && KV_REST_API_TOKEN) {
@@ -1827,7 +1834,7 @@ async function getTelemetryStats(): Promise<Record<string, TelemetryRecord>> {
   }
 
   // Local file fallback
-  const filePath = path.join(process.cwd(), 'data', 'admin_stats.json');
+  const filePath = path.join(getDataDir(), 'admin_stats.json');
   try {
     if (fs.existsSync(filePath)) {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -1858,7 +1865,7 @@ async function saveTelemetryRecord(record: TelemetryRecord): Promise<void> {
   }
 
   // Local file fallback
-  const dirPath = path.join(process.cwd(), 'data');
+  const dirPath = getDataDir();
   const filePath = path.join(dirPath, 'admin_stats.json');
   try {
     if (!fs.existsSync(dirPath)) {
@@ -1951,7 +1958,7 @@ async function getClassInfo(teacherId: string): Promise<any | null> {
   }
 
   // Local file fallback
-  const filePath = path.join(process.cwd(), 'data', 'classes.json');
+  const filePath = path.join(getDataDir(), 'classes.json');
   try {
     if (fs.existsSync(filePath)) {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -2004,7 +2011,7 @@ async function saveClassInfo(teacherId: string, classInfo: any): Promise<void> {
   }
 
   // Local file fallback
-  const dirPath = path.join(process.cwd(), 'data');
+  const dirPath = getDataDir();
   const filePath = path.join(dirPath, 'classes.json');
   try {
     if (!fs.existsSync(dirPath)) {
@@ -2044,7 +2051,7 @@ async function getAllSubmissions(teacherId: string): Promise<Record<string, any[
   }
 
   // Local file fallback
-  const filePath = path.join(process.cwd(), 'data', 'submissions.json');
+  const filePath = path.join(getDataDir(), 'submissions.json');
   try {
     if (fs.existsSync(filePath)) {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -2079,7 +2086,7 @@ async function saveStudentSubmissions(teacherId: string, studentId: string, stud
   }
 
   // Local file fallback
-  const dirPath = path.join(process.cwd(), 'data');
+  const dirPath = getDataDir();
   const filePath = path.join(dirPath, 'submissions.json');
   try {
     if (!fs.existsSync(dirPath)) {
