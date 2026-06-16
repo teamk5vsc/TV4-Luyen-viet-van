@@ -1219,7 +1219,7 @@ export default function App() {
             <div className="hidden sm:block h-[180px] w-[320px] shrink-0">
               <img 
                 src="/hero-banner.png" 
-                alt="VietMaster 5 - Cú Văn và các bạn nhỏ" 
+                alt="VietMaster 4 - Cú Văn và các bạn nhỏ" 
                 className="h-full w-full object-cover object-center rounded-r-2xl"
               />
             </div>
